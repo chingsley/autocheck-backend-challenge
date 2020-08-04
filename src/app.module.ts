@@ -9,6 +9,7 @@ import { User } from './users/user.model';
 import { UsersModule } from './users/users.module';
 import { WalletsModule } from './wallets/wallets.module';
 import { Wallet } from './wallets/wallet.model';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { Wallet } from './wallets/wallet.model';
     UsersModule,
     CarsModule,
     WalletsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -8,7 +8,7 @@ import { validateNewUser } from './users.middleware';
 
 @Module({
   imports: [SequelizeModule.forFeature([User])],
-  exports: [SequelizeModule],
+  exports: [SequelizeModule, UsersService],
   providers: [UsersService],
   controllers: [UsersController],
 })
