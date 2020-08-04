@@ -5,12 +5,9 @@ import { User } from '../users/user.model';
 @Table
 export class Wallet extends Model<Wallet> {
   @Column({ allowNull: false, unique: true })
-  creditCardNumber: string;
+  cardNumber: string;
 
-  @Column({ allowNull: false, unique: true })
-  debitCardNumber: string;
-
-  @Column({ allowNull: false })
+  @Column({ allowNull: false, defaultValue: 0.0 })
   balance: number;
 
   @ForeignKey(() => User)
@@ -24,11 +21,7 @@ export class Wallet extends Model<Wallet> {
 export class NewWalletDto {
   @IsNotEmpty()
   @IsString()
-  creditCardNumber: string;
-
-  @IsNotEmpty()
-  @IsString()
-  debitCardNumber: string;
+  cardNumber: string;
 
   @IsNumberString()
   balance: number;
