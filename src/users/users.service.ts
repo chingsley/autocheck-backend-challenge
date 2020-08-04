@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './user.model';
 import { NewUserDto } from './user.model';
@@ -11,17 +11,8 @@ export class UsersService {
   ) {}
 
   async create(payload: NewUserDto): Promise<User> {
-    let user = await this.findUserByEmail(payload.email);
-    if (user) {
-      throw new HttpException(
-        {
-          status: HttpStatus.CONFLICT,
-          error: `a user with email ${payload.email} already exists`,
-        },
-        HttpStatus.CONFLICT,
-      );
-    }
-    user = new this.userModel(payload);
+    await this.detectUniqueViolationOfEmail(payload.email, undefined);
+    const user = new this.userModel(payload);
     await user.save();
     return user;
   }
@@ -30,21 +21,41 @@ export class UsersService {
     return this.userModel.findAll();
   }
 
-  findById(id: number): Promise<User> {
-    return this.userModel.findOne({
-      where: {
-        id,
-      },
-    });
+  async findOne(id: number): Promise<User> {
+    const user = await this.findBy('id', id);
+    if (!user) {
+      throw new HttpException(
+        {
+          status: HttpStatus.CONFLICT,
+          error: `no user matches the ${id}`,
+        },
+        HttpStatus.CONFLICT,
+      );
+    }
+    return user;
+  }
+
+  async findBy(parameter: string, value: number | string) {
+    const user = await this.userModel.findOne({ where: { [parameter]: value } });
+    return user;
   }
 
   async remove(id: number): Promise<void> {
-    const user = await this.findById(id);
+    const user = await this.findOne(id);
+
     await user.destroy();
   }
 
-  private async findUserByEmail(email: string): Promise<User> {
+  private async detectUniqueViolationOfEmail(email: string, id: number): Promise<void> {
     const user = await this.userModel.findOne({ where: { email } });
-    return user;
+    if (user && user.id !== id) {
+      throw new HttpException(
+        {
+          status: HttpStatus.CONFLICT,
+          error: `a user with email ${email} already exists`,
+        },
+        HttpStatus.CONFLICT,
+      );
+    }
   }
 }
