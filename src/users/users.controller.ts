@@ -8,10 +8,13 @@ import {
   Delete,
   HttpCode,
   ParseIntPipe,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.model';
 import { NewUserDto } from './User.model';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -25,6 +28,12 @@ export class UsersController {
     const { firstName, lastName, email, password } = body;
     const user = await this.usersService.create({ firstName, lastName, email, password });
     return { id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
   }
 
   @Get(':id')

@@ -1,6 +1,7 @@
 import { CarsService } from './cars.service';
 import { Car, NewCarDto, carUpdateDto } from './car.model';
-import { Controller, Post, Body, Patch, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Post, Body, Patch, Param, ParseIntPipe, Get, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('cars')
 export class CarsController {
@@ -15,5 +16,11 @@ export class CarsController {
   @Patch(':id')
   async editCar(@Body() body: carUpdateDto, @Param('id', ParseIntPipe) id: number): Promise<Car> {
     return await this.carsService.update(id, body);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async getAlCars(): Promise<Car[]> {
+    return this.carsService.findAll();
   }
 }
