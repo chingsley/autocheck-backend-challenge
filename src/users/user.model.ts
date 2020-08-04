@@ -22,7 +22,11 @@ export class User extends Model<User> {
 
   @BeforeCreate
   static async hashPassword(instance: User) {
-    instance.password = await bcrypt.hash(instance.password, 12);
+    console.log('\n\n', Number(process.env.BCRYPT_SALT_ROUNDS));
+    instance.password = await bcrypt.hash(
+      instance.password,
+      Number(process.env.BCRYPT_SALT_ROUNDS),
+    );
   }
 }
 
