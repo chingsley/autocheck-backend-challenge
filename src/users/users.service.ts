@@ -36,7 +36,10 @@ export class UsersService {
   }
 
   async findBy(parameter: string, value: number | string) {
-    const user = await this.userModel.findOne({ where: { [parameter]: value } });
+    const user = await this.userModel.findOne({
+      where: { [parameter]: value },
+      include: [User.associations.wallet],
+    });
     return user;
   }
 

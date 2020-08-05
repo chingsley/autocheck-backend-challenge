@@ -1,5 +1,5 @@
 import { Column, Model, Table, BelongsTo, ForeignKey } from 'sequelize-typescript';
-import { IsNotEmpty, IsNumberString, IsInt, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumberString, IsInt, IsString, IsOptional } from 'class-validator';
 import { User } from '../users/user.model';
 
 @Table
@@ -23,9 +23,10 @@ export class NewWalletDto {
   @IsString()
   cardNumber: string;
 
+  @IsOptional()
   @IsNumberString()
   balance: number;
 
-  @IsInt()
-  userId: number;
+  // @IsInt()
+  // userId: number;
 }
