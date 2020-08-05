@@ -21,15 +21,15 @@ export class UsersService {
     return this.userModel.findAll();
   }
 
-  async findOne(id: number): Promise<User> {
+  async findOne(id: number): Promise<any> {
     const user = await this.findBy('id', id);
     if (!user) {
       throw new HttpException(
         {
-          status: HttpStatus.CONFLICT,
+          status: HttpStatus.NOT_FOUND,
           error: `no user matches the ${id}`,
         },
-        HttpStatus.CONFLICT,
+        HttpStatus.NOT_FOUND,
       );
     }
     return user;

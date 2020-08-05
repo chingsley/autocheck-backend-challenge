@@ -38,6 +38,8 @@ export class UsersController {
 
   @Get(':id')
   async findOneById(@Param('id', ParseIntPipe) id: number) {
-    return await this.usersService.findOne(id);
+    const user = await this.usersService.findOne(id);
+    const { password, ...rest } = user.dataValues;
+    return rest;
   }
 }

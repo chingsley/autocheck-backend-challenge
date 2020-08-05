@@ -1,4 +1,12 @@
-import { Column, Model, Table, HasMany, HasOne, BeforeCreate } from 'sequelize-typescript';
+import {
+  Column,
+  Model,
+  Table,
+  HasMany,
+  HasOne,
+  BeforeCreate,
+  AfterCreate,
+} from 'sequelize-typescript';
 import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 import { Wallet } from '../wallets/wallet.model';
 import * as bcrypt from 'bcrypt';
@@ -22,11 +30,16 @@ export class User extends Model<User> {
 
   @BeforeCreate
   static async hashPassword(instance: User) {
-    console.log('\n\ninstance = ', instance);
+    // console.log('\n\ninstance = ', instance);
     instance.password = await bcrypt.hash(
       instance.password,
       Number(process.env.BCRYPT_SALT_ROUNDS),
     );
+  }
+
+  @AfterCreate
+  static async createUserWallet(instance: any) {
+    // console.log('\n\n instance = ', instance._modelOptions.sequelize.models);
   }
 }
 
