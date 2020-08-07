@@ -10,6 +10,7 @@ module.exports = {
       },
       userId: {
         type: Sequelize.INTEGER,
+        unique: true,
         allowNull: false,
         references: {
           model: 'Users',
@@ -20,9 +21,13 @@ module.exports = {
       },
       cardNumber: {
         type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
       },
       balance: {
-        type: Sequelize.DECIMAL,
+        type: Sequelize.DECIMAL(12, 2),
+        allowNull: false,
+        default: 0.0,
       },
       createdAt: {
         allowNull: false,

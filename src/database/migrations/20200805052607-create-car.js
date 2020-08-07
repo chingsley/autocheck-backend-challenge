@@ -26,7 +26,7 @@ module.exports = {
         unique: true,
       },
       price: {
-        type: Sequelize.DECIMAL,
+        type: Sequelize.DECIMAL(12, 2),
         allowNull: false,
       },
       location: {
