@@ -7,8 +7,8 @@ import { CarsController } from './cars.controller';
 
 @Module({
   imports: [SequelizeModule.forFeature([Car])],
-  exports: [SequelizeModule],
-  controllers: [CarsController],
+  exports: [SequelizeModule, CarsService],
   providers: [CarsService],
+  controllers: [CarsController],
 })
 export class CarsModule {}

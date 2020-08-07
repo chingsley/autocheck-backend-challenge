@@ -18,9 +18,9 @@ export class CarsController {
     return await this.carsService.update(id, body);
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get()
   async getAlCars(): Promise<Car[]> {
-    return this.carsService.findAll();
+    return await this.carsService.findAll();
   }
 }

@@ -7,6 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Sale } from '../sales/sale.model';
 
 @Injectable()
 export class CarsService {
@@ -19,16 +20,27 @@ export class CarsService {
     return car;
   }
 
-  async findAll(): Promise<Car[]> {
-    return this.carModel.findAll();
+  findAll(): Promise<Car[]> {
+    return this.carModel.findAll({ where: {}, include: [Sale] });
   }
 
   async findOne(id: number): Promise<Car> {
-    return this.findById(id);
+    const car = await this.findBy('id', id);
+    if (!car) {
+      throw new HttpException(
+        {
+          status: HttpStatus.CONFLICT,
+          error: `a car matches the id of ${id}`,
+        },
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    return car;
   }
 
   async update(id: number, payload: carUpdateDto): Promise<Car> {
-    const car = await this.findById(id);
+    const car = await this.findOne(id);
     if (payload.vin) {
       await this.ensureUniqueVin(payload.vin, id);
     }
@@ -37,17 +49,19 @@ export class CarsService {
   }
 
   async remove(id: number): Promise<void> {
-    const car = await this.findById(id);
+    const car = await this.findOne(id);
     await car.destroy();
   }
 
-  private async findCarByVin(vin: string): Promise<Car> {
-    const car = await this.carModel.findOne({ where: { vin } });
-    return car;
+  private findBy(field: string, value: number | string) {
+    return this.carModel.findOne({
+      where: { [field]: value },
+      include: [Sale],
+    });
   }
 
   private async ensureUniqueVin(vin: string, id: any): Promise<any> {
-    const car = await this.findCarByVin(vin);
+    const car = await this.findBy('vin', vin);
     if (car && car.id !== id) {
       throw new HttpException(
         {
@@ -57,14 +71,5 @@ export class CarsService {
         HttpStatus.CONFLICT,
       );
     }
-  }
-
-  private async findById(id: number): Promise<Car> {
-    const car = await this.carModel.findOne({ where: { id } });
-    if (!car) {
-      throw new NotFoundException();
-    }
-
-    return car;
   }
 }

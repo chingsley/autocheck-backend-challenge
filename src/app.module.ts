@@ -9,7 +9,9 @@ import { User } from './users/user.model';
 import { UsersModule } from './users/users.module';
 import { WalletsModule } from './wallets/wallets.module';
 import { Wallet } from './wallets/wallet.model';
+import { Sale } from './sales/sale.model';
 import { AuthModule } from './auth/auth.module';
+import { SalesModule } from './sales/sales.module';
 
 @Module({
   imports: [
@@ -20,7 +22,7 @@ import { AuthModule } from './auth/auth.module';
       username: 'root',
       password: 'root1234',
       database: 'autocheck',
-      models: [User, Car, Wallet],
+      models: [User, Car, Wallet, Sale],
 
       autoLoadModels: true,
       synchronize: true,
@@ -28,6 +30,7 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     CarsModule,
     WalletsModule,
+    SalesModule,
     AuthModule,
   ],
   controllers: [AppController],
