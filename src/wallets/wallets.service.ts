@@ -17,7 +17,8 @@ export class WalletsService {
   }
 
   async topUp(userId: number, amount: number): Promise<Wallet> {
-    const userWallet = await this.walletModel.findOne({ where: { userId } });
+    const userWallet = await this.findOne(userId);
+    return userWallet;
     userWallet.balance = Number(userWallet.balance) + Number(amount);
     await userWallet.save();
     return userWallet;
@@ -27,7 +28,7 @@ export class WalletsService {
     return this.walletModel.findAll();
   }
 
-  async findOne(id: string): Promise<Wallet> {
+  async findOne(id: number): Promise<Wallet> {
     const wallet = await this.walletModel.findOne({
       where: {
         id,
@@ -37,7 +38,7 @@ export class WalletsService {
       throw new HttpException(
         {
           status: HttpStatus.NOT_FOUND,
-          error: 'user wallet not found',
+          error: 'no wallet found for the user',
         },
         HttpStatus.NOT_FOUND,
       );
@@ -45,7 +46,7 @@ export class WalletsService {
     return wallet;
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: number): Promise<void> {
     const wallet = await this.findOne(id);
     await wallet.destroy();
   }

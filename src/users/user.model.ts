@@ -9,6 +9,7 @@ import {
 } from 'sequelize-typescript';
 import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 import { Wallet } from '../wallets/wallet.model';
+import { Sale } from '../sales/sale.model';
 import * as bcrypt from 'bcrypt';
 
 @Table
@@ -27,6 +28,9 @@ export class User extends Model<User> {
 
   @HasOne(() => Wallet)
   wallet: Wallet;
+
+  @HasMany(() => Sale)
+  sale: Sale;
 
   @BeforeCreate
   static async hashPassword(instance: User) {

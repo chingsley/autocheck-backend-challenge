@@ -1,4 +1,5 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, Model, Table, HasOne } from 'sequelize-typescript';
+import { Sale } from '../sales/sale.model';
 import {
   IsNotEmpty,
   IsNumberString,
@@ -27,6 +28,9 @@ export class Car extends Model<Car> {
 
   @Column({ allowNull: false })
   location: string;
+
+  @HasOne(() => Sale)
+  sold: Sale;
 }
 
 export class NewCarDto {
