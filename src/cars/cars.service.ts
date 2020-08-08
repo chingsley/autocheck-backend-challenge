@@ -62,7 +62,7 @@ export class CarsService {
 
   private async ensureUniqueVin(vin: string, id: any): Promise<any> {
     const car = await this.findBy('vin', vin);
-    if (car && car.id !== id) {
+    if (car && `${car.id}` !== `${id}`) {
       throw new HttpException(
         {
           status: HttpStatus.CONFLICT,

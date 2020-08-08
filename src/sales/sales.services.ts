@@ -4,10 +4,11 @@ import { Sale } from './sale.model';
 import { User } from '../users/user.model';
 import { Car } from '../cars/car.model';
 import { Wallet } from '../wallets/wallet.model';
+import { TasksService } from '../tasks/tasks.services';
 
 @Injectable()
 export class SalesService {
-  constructor(@InjectModel(Sale) private saleModel: typeof Sale) {}
+  constructor(@InjectModel(Sale) private saleModel: typeof Sale, private ts: TasksService) {}
 
   /**
    * *
@@ -15,7 +16,7 @@ export class SalesService {
    * step 2: debit user (subtract the car price from the user balance)
    * step 3: [credit the companies account with the price of the car]
    * step 4: save the sales in th Sales table (carId, userId)
-   * step 6: schedule notification to the user
+   * step 6: send notification to the user
    *
    * @param car car model instance of the car to be sold
    * @param user a user model instance of the purchasing using
@@ -26,6 +27,7 @@ export class SalesService {
     // [credit company's account here before the next line]
     const sale = new this.saleModel({ carId: car.id, userId: user.id });
     await sale.save();
+    this.ts.sendNotification(car, user);
     return sale;
   }
 

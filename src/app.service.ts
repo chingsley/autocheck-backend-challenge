@@ -6,6 +6,6 @@ export class AppService {
   constructor(private sequelize: Sequelize) {}
 
   getServerStatus(): string {
-    return 'available!';
+    return 'server is running...';
   }
 }
