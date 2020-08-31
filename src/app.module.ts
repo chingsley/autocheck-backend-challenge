@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { ScheduleModule } from '@nestjs/schedule';
+
+import { SendGridModule } from '@ntegral/nestjs-sendgrid';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -15,6 +18,7 @@ import { SalesModule } from './sales/sales.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     SequelizeModule.forRoot({
       dialect: 'mysql',
       host: 'localhost',
@@ -26,6 +30,9 @@ import { SalesModule } from './sales/sales.module';
 
       autoLoadModels: true,
       synchronize: true,
+    }),
+    SendGridModule.forRoot({
+      apiKey: process.env.SENDGRID_API_KEY,
     }),
     UsersModule,
     CarsModule,

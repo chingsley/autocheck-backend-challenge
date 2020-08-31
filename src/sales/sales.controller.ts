@@ -21,6 +21,12 @@ export class SalesController {
     const { userId } = req.user;
     const car = await this.carsService.findOne(carId);
     const user = await this.usersService.findOne(userId);
-    return this.salesService.performPaymentTransaction(car, user);
+    // return this.salesService.performPaymentTransaction(car, user);
+    const result = await this.salesService.performPaymentTransaction(car, user);
+    return {
+      message:
+        'transaction completed successfully. You will get a confirmation email in the next 5 minutes',
+      data: result,
+    };
   }
 }
